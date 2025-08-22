@@ -1,0 +1,9 @@
+.:53 {
+  # Авторитетная зона из файла
+  file /zones/leanwebstudio.zone leanwebstudio.ru
+
+  # Удобные лог/ошибки и hot-reload при изменении файлов
+  log
+  errors
+  reload
+}

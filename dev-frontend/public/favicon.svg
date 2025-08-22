@@ -1,0 +1,22 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Professional monogram favicon for Lean Web Studio -->
+  
+  <!-- Background with rounded corners -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  
+  <!-- Stylized "LW" in clean typography -->
+  <g fill="white">
+    <!-- Letter L -->
+    <path d="M7 6h3v14h7v3H7V6z"/>
+    
+    <!-- Letter W -->
+    <path d="M17 6h2.5l1.5 11 1.5-11H25l-2.5 17h-2l-1.5-9-1.5 9h-2L17 6z"/>
+  </g>
+  
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#523DFA"/>
+      <stop offset="1" stop-color="#11AEFF"/>
+    </linearGradient>
+  </defs>
+</svg>

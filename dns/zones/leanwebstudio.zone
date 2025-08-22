@@ -1,0 +1,22 @@
+$ORIGIN leanwebstudio.ru.
+$TTL 300
+
+@     IN SOA ns1.leanwebstudio.ru. admin.leanwebstudio.ru. (
+        2025081501 ; serial  (меняй при каждом коммите зоны)
+        3600       ; refresh
+        1800       ; retry
+        604800     ; expire
+        300        ; minimum
+)
+
+      IN NS ns1.leanwebstudio.ru.
+
+; CoreDNS сам является ns1 (наш сервер)
+ns1   IN A 103.228.168.74
+
+; Корневая запись домена (прод)
+@     IN A 103.228.168.74
+www   IN CNAME @
+
+; Dev поддомен (указывает на тот же сервер)
+dev   IN A 103.228.168.74

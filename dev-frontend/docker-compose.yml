@@ -1,0 +1,13 @@
+services:
+  velocity-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: velocity-dev
+    restart: unless-stopped
+    networks:
+      - npm-network
+
+networks:
+  npm-network:
+    external: true

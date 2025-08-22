@@ -1,0 +1,40 @@
+name: Deploy Dev Frontend
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'dev-frontend/**'
+  workflow_dispatch:
+
+concurrency:
+  group: dev-frontend
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build image
+        working-directory: dev-frontend
+        run: docker build -t velocity-dev .
+
+      - name: Stop old container
+        run: docker stop velocity-dev || true && docker rm velocity-dev || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name velocity-dev \
+            --restart unless-stopped \
+            --network npm-network \
+            velocity-dev
+
+      - name: Show status
+        run: docker ps --filter name=velocity-dev

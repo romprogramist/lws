@@ -1,0 +1,53 @@
+name: Deploy Nginx Proxy Manager
+
+on:
+  push:
+    branches: [ main, dev ]
+    paths:
+      - 'n-p-m/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Show docker & compose versions
+        run: |
+          docker version
+          docker compose version
+
+      - name: Pull image
+        working-directory: n-p-m
+        run: docker compose pull
+
+      - name: Up NPM
+        working-directory: n-p-m
+        run: docker compose up -d
+
+      - name: Show NPM status
+        run: |
+          docker ps --filter "name=nginx-proxy-manager"
+          docker logs --tail=50 nginx-proxy-manager || true
+
+      # НЕобязательная быстрая проверка UI локально на сервере
+
+
+      - name: Wait for NPM UI on :81
+        run: |
+          tries=30
+          for i in $(seq 1 $tries); do
+            if curl -sSf -m 2 http://127.0.0.1:81 >/dev/null; then
+              echo "UI OK"
+              exit 0
+            fi
+            echo "[$i/$tries] waiting UI on :81..."
+            sleep 2
+          done
+          echo "UI not reachable after ${tries} attempts"
+          docker logs --tail=200 nginx-proxy-manager || true
+          exit 1
+

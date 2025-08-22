@@ -1,0 +1,46 @@
+name: Deploy CoreDNS
+
+on:
+  push:
+    branches: [dev, main]
+    paths:
+      - 'dns/**'
+  workflow_dispatch:
+
+concurrency:
+  group: coredns-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Precheck port 53
+        run: |
+          sudo ss -u -lpn | grep ':53' || echo "UDP 53 free"
+          sudo ss -t -lpn | grep ':53' || echo "TCP 53 free"
+
+      - name: Pull image
+        working-directory: dns
+        run: docker compose pull
+
+      - name: Up CoreDNS
+        working-directory: dns
+        run: docker compose up -d --remove-orphans
+
+      - name: Smoke test (local)
+        run: |
+          sleep 2
+          dig @127.0.0.1 dev.leanwebstudio.ru A +short
+          dig @127.0.0.1 leanwebstudio.ru A +short
+          dig @127.0.0.1 ns1.leanwebstudio.ru A +short
+
+      - name: Logs tail on failure
+        if: failure()
+        run: docker logs --tail=200 coredns || true
